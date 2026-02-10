@@ -1,0 +1,14 @@
+[project]
+name = "pokemon-team-maker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.1"
+dependencies = [
+    "argon2-cffi>=25.1.0",
+    "fastapi>=0.128.5",
+    "jwt>=1.4.0",
+    "pwdlib>=0.3.0",
+    "pydantic>=2.12.5",
+    "sqlmodel>=0.0.32",
+]
