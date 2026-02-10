@@ -285,6 +285,14 @@
         "documentation": {}
     },
     {
+        "label": "CORSMiddleware",
+        "importPath": "fastapi.middleware.cors",
+        "description": "fastapi.middleware.cors",
+        "isExtraImport": true,
+        "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
         "label": "BaseSettings",
         "importPath": "pydantic_settings",
         "description": "pydantic_settings",
@@ -502,7 +510,7 @@
         "kind": 5,
         "importPath": "app.app",
         "description": "app.app",
-        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.include_router(auth.router)\napp.include_router(teams.router)",
+        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\napp.include_router(auth.router)\napp.include_router(teams.router)",
         "detail": "app.app",
         "documentation": {}
     },
