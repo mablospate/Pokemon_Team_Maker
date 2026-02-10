@@ -1,0 +1,50 @@
+meta {
+  name: My Teams
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/teams/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/teams/
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "name": "",
+            "id": 0,
+            "user_id": 0
+          }
+        ]
+      '''
+    }
+  }
+}

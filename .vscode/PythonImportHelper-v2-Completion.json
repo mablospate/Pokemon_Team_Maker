@@ -60,6 +60,14 @@
         "documentation": {}
     },
     {
+        "label": "Annotated",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -117,6 +125,30 @@
         "documentation": {}
     },
     {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "FastAPI",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -138,6 +170,22 @@
         "description": "fastapi",
         "isExtraImport": true,
         "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Session",
+        "importPath": "sqlmodel",
+        "description": "sqlmodel",
+        "isExtraImport": true,
+        "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlmodel",
+        "description": "sqlmodel",
+        "isExtraImport": true,
+        "detail": "sqlmodel",
         "documentation": {}
     },
     {
@@ -218,6 +266,14 @@
         "description": "sqlmodel",
         "isExtraImport": true,
         "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "app.models",
+        "description": "app.models",
+        "isExtraImport": true,
+        "detail": "app.models",
         "documentation": {}
     },
     {
@@ -370,11 +426,83 @@
         "documentation": {}
     },
     {
+        "label": "create_team",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def create_team(\n    data: TeamCreate,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = Team(name=data.name, user_id=user.id)\n    session.add(team)\n    session.commit()\n    session.refresh(team)\n    return team",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "my_teams",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def my_teams(\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    return session.exec(select(Team).where(Team.user_id == user.id)).all()\n@router.get(\"/{team_id}\", response_model=TeamPublicWithPokemon)\ndef pokemon_in_team(\n    team_id: int,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "pokemon_in_team",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def pokemon_in_team(\n    team_id: int,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(team_id == Team.id, Team.user_id == user.id)\n    ).first()\n    if not team:\n        raise HTTPException(status_code=404, detail=\"Equipo no encontrado\")",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "update_team_name",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def update_team_name(\n    team_id: str,\n    data: TeamUpdate,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(team_id == Team.id, Team.user_id == user.id)\n    ).first()\n    if not team:",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "remove_team",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def remove_team(\n    team_id: int,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(team_id == Team.id, Team.user_id == user.id)\n    ).first()\n    if not team:\n        raise HTTPException(status_code=404)",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "add_pokemon",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def add_pokemon(\n    team_id: int,\n    data: PokemonCreate,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(team_id == Team.id, user.id == Team.user_id)\n    ).first()\n    if not team:",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "delete_pokemon",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def delete_pokemon(\n    team_id: str,\n    pokemon_id: str,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    pokemon = session.exec(\n        select(Pokemon).where(Pokemon.id == pokemon_id, Pokemon.team_id == team_id)\n    ).first()\n    if not pokemon:",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "router = APIRouter(prefix=\"/teams\", tags=[\"Teams\"])\n@router.post(\"/\", response_model=TeamPublic)\ndef create_team(\n    data: TeamCreate,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = Team(name=data.name, user_id=user.id)\n    session.add(team)\n    session.commit()",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "kind": 5,
         "importPath": "app.app",
         "description": "app.app",
-        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.include_router(auth.router)",
+        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.include_router(auth.router)\napp.include_router(teams.router)",
         "detail": "app.app",
         "documentation": {}
     },
@@ -563,7 +691,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class PokemonBase(SQLModel):\n    name: str\nclass PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################",
+        "peekOfCode": "class PokemonBase(SQLModel):\n    name: str\n    species: str\n    level: int = Field(gt=0, le=100)\nclass PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\n    species: str | None = None\n    level: int | None = Field(default=None, gt=0, le=100)",
         "detail": "app.models",
         "documentation": {}
     },
@@ -572,7 +700,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################",
+        "peekOfCode": "class PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\n    species: str | None = None\n    level: int | None = Field(default=None, gt=0, le=100)\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################",
         "detail": "app.models",
         "documentation": {}
     },
@@ -581,7 +709,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################\nclass Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "peekOfCode": "class PokemonUpdate(SQLModel):\n    name: str | None = None\n    species: str | None = None\n    level: int | None = Field(default=None, gt=0, le=100)\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################",
         "detail": "app.models",
         "documentation": {}
     },
@@ -590,7 +718,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################\nclass Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    tesm_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
+        "peekOfCode": "class PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################\nclass Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    team_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
         "detail": "app.models",
         "documentation": {}
     },
@@ -599,7 +727,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    tesm_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
+        "peekOfCode": "class Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    team_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
         "detail": "app.models",
         "documentation": {}
     }

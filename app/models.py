@@ -80,6 +80,8 @@ class Team(TeamBase, table=True):
 
 class PokemonBase(SQLModel):
     name: str
+    species: str
+    level: int = Field(gt=0, le=100)
 
 
 class PokemonCreate(PokemonBase):
@@ -88,6 +90,8 @@ class PokemonCreate(PokemonBase):
 
 class PokemonUpdate(SQLModel):
     name: str | None = None
+    species: str | None = None
+    level: int | None = Field(default=None, gt=0, le=100)
 
 
 class PokemonPublic(PokemonBase):
@@ -102,5 +106,5 @@ class PokemonPublic(PokemonBase):
 
 class Pokemon(PokemonBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    tesm_id: int = Field(foreign_key="team.id")
+    team_id: int = Field(foreign_key="team.id")
     team: "Team" = Relationship(back_populates="pokemon")

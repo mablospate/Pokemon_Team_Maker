@@ -1,0 +1,123 @@
+meta {
+  name: Add Pokemon
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/teams/:team_id/pokemon
+  body: json
+  auth: bearer
+}
+
+params:path {
+  team_id: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "species": "",
+    "level": 0
+  }
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id/pokemon
+    method: POST
+    mode: json
+    params:path: {
+      team_id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "species": "",
+        "level": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "name": "",
+          "species": "",
+          "level": 0,
+          "id": 0,
+          "team_id": 0
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id/pokemon
+    method: POST
+    mode: json
+    params:path: {
+      team_id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "species": "",
+        "level": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": "",
+              "input": "",
+              "ctx": {}
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

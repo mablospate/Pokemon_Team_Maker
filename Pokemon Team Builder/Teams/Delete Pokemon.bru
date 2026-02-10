@@ -1,0 +1,96 @@
+meta {
+  name: Delete Pokemon
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/teams/:team_id/pokemon/:pokemon_id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  team_id: 
+  pokemon_id: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id/pokemon/:pokemon_id
+    method: DELETE
+    mode: none
+    params:path: {
+      team_id: 
+      pokemon_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id/pokemon/:pokemon_id
+    method: DELETE
+    mode: none
+    params:path: {
+      team_id: 
+      pokemon_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": "",
+              "input": "",
+              "ctx": {}
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

@@ -1,0 +1,106 @@
+meta {
+  name: Pokemon In Team
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/teams/:team_id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  team_id: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id
+    method: GET
+    mode: none
+    params:path: {
+      team_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "name": "",
+          "id": 0,
+          "user_id": 0,
+          "pokemon": [
+            {
+              "name": "",
+              "species": "",
+              "level": 0,
+              "id": 0,
+              "team_id": 0
+            }
+          ]
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/teams/:team_id
+    method: GET
+    mode: none
+    params:path: {
+      team_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": "",
+              "input": "",
+              "ctx": {}
+            }
+          ]
+        }
+      '''
+    }
+  }
+}
