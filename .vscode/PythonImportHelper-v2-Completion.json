@@ -44,6 +44,14 @@
         "documentation": {}
     },
     {
+        "label": "BaseSettings",
+        "importPath": "pydantic_settings",
+        "description": "pydantic_settings",
+        "isExtraImport": true,
+        "detail": "pydantic_settings",
+        "documentation": {}
+    },
+    {
         "label": "SQLModel",
         "importPath": "sqlmodel",
         "description": "sqlmodel",
@@ -89,6 +97,14 @@
         "description": "sqlmodel",
         "isExtraImport": true,
         "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
         "documentation": {}
     },
     {
@@ -173,6 +189,24 @@
         "documentation": {}
     },
     {
+        "label": "Settings",
+        "kind": 6,
+        "importPath": "app.config",
+        "description": "app.config",
+        "peekOfCode": "class Settings(BaseSettings):\n    secret_key: str\n    database_url: str\n    class Config:\n        env_file = \".env\"\nsettings = Settings()",
+        "detail": "app.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "kind": 5,
+        "importPath": "app.config",
+        "description": "app.config",
+        "peekOfCode": "settings = Settings()",
+        "detail": "app.config",
+        "documentation": {}
+    },
+    {
         "label": "create_db",
         "kind": 2,
         "importPath": "app.database",
@@ -218,11 +252,92 @@
         "documentation": {}
     },
     {
+        "label": "UserBase",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class UserBase(SQLModel):\n    username: str = Field(unique=True)\nclass UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "UserCreate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "UserUpdate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "UserPublic",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
         "label": "User",
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class User(SQLModel, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    username: str = Field(unique=True)\n    hashed_password: str\n    teams: list[\"Team\"] = Relationship(back_populates=\"user\")\nclass Team(SQLModel, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    name: str\n    user_id: int = Field(foreign_key=\"user.id\")\n    user: User = Relationship(back_populates=\"teams\")",
+        "peekOfCode": "class User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")\n############################################################\n#                        TEAM MODELS                       #\n############################################################\nclass TeamBase(SQLModel):\n    name: str\nclass TeamCreate(TeamBase):",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "TeamBase",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class TeamBase(SQLModel):\n    name: str\nclass TeamCreate(TeamBase):\n    pass\nclass TeamUpdate(SQLModel):\n    name: str | None = None\nclass TeamPublic(TeamBase):\n    id: int\n    user_id: int\nclass TeamPublicWithPokemon(TeamPublic):",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "TeamCreate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class TeamCreate(TeamBase):\n    pass\nclass TeamUpdate(SQLModel):\n    name: str | None = None\nclass TeamPublic(TeamBase):\n    id: int\n    user_id: int\nclass TeamPublicWithPokemon(TeamPublic):\n    pokemon: List[\"PokemonPublic\"] = []\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "TeamUpdate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class TeamUpdate(SQLModel):\n    name: str | None = None\nclass TeamPublic(TeamBase):\n    id: int\n    user_id: int\nclass TeamPublicWithPokemon(TeamPublic):\n    pokemon: List[\"PokemonPublic\"] = []\n############################################################\n#                     TEAM IN DATABASE                    #\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "TeamPublic",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class TeamPublic(TeamBase):\n    id: int\n    user_id: int\nclass TeamPublicWithPokemon(TeamPublic):\n    pokemon: List[\"PokemonPublic\"] = []\n############################################################\n#                     TEAM IN DATABASE                    #\n############################################################\nclass Team(TeamBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "TeamPublicWithPokemon",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class TeamPublicWithPokemon(TeamPublic):\n    pokemon: List[\"PokemonPublic\"] = []\n############################################################\n#                     TEAM IN DATABASE                    #\n############################################################\nclass Team(TeamBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    user_id: int = Field(foreign_key=\"user.id\")\n    user: User = Relationship(back_populates=\"teams\")\n    pokemon: list[\"Pokemon\"] = Relationship(back_populates=\"team\")",
         "detail": "app.models",
         "documentation": {}
     },
@@ -231,7 +346,43 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class Team(SQLModel, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    name: str\n    user_id: int = Field(foreign_key=\"user.id\")\n    user: User = Relationship(back_populates=\"teams\")\nclass Pokemon(SQLModel, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    name: str\n    team_id: int = Field(foreign_key=\"team.id\")",
+        "peekOfCode": "class Team(TeamBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    user_id: int = Field(foreign_key=\"user.id\")\n    user: User = Relationship(back_populates=\"teams\")\n    pokemon: list[\"Pokemon\"] = Relationship(back_populates=\"team\")\n############################################################\n#                      POKEMON MODELS                     #\n############################################################\nclass PokemonBase(SQLModel):\n    name: str",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "PokemonBase",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class PokemonBase(SQLModel):\n    name: str\nclass PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "PokemonCreate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class PokemonCreate(PokemonBase):\n    pass\nclass PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "PokemonUpdate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class PokemonUpdate(SQLModel):\n    name: str | None = None\nclass PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################\nclass Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "PokemonPublic",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class PokemonPublic(PokemonBase):\n    id: int\n    team_id: int\n############################################################\n#                    POKEMON IN DATABASE                   #\n############################################################\nclass Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    tesm_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
         "detail": "app.models",
         "documentation": {}
     },
@@ -240,7 +391,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class Pokemon(SQLModel, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    name: str\n    team_id: int = Field(foreign_key=\"team.id\")",
+        "peekOfCode": "class Pokemon(PokemonBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    tesm_id: int = Field(foreign_key=\"team.id\")\n    team: \"Team\" = Relationship(back_populates=\"pokemon\")",
         "detail": "app.models",
         "documentation": {}
     }
