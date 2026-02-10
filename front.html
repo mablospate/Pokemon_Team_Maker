@@ -455,31 +455,8 @@
             </div>
         </div>
 
-        <!-- CONFIG -->
-        <div id="sec-config" class="sec on fade-in">
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-5 col-11">
-                    <div class="text-center mb-4">
-                        <div style="font-size:3rem">⚡</div>
-                        <h3 class="mt-2" style="font-weight:700">Pokémon Team Builder</h3>
-                        <p style="color:var(--muted)">Conecta tu API para empezar</p>
-                    </div>
-                    <div class="card-dark">
-                        <div class="card-body">
-                            <label class="form-label small text-uppercase"
-                                style="color:var(--muted);letter-spacing:.5px" for="api-url">URL de la API</label>
-                            <input id="api-url" class="form-control form-control-dark mb-3"
-                                value="http://localhost:8000" placeholder="http://localhost:8000">
-                            <button type="button" class="btn btn-primary-custom w-100" id="btn-setapi">Conectar <i
-                                    class="fa-solid fa-arrow-right ms-1"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- AUTH -->
-        <div id="sec-auth" class="sec fade-in">
+        <div id="sec-auth" class="sec on fade-in">
             <div class="row justify-content-center mt-4">
                 <div class="col-md-5 col-11">
                     <div class="card-dark">
@@ -521,11 +498,6 @@
                                 </div>
                                 <button type="button" class="btn btn-primary-custom w-100" id="btn-register">Crear
                                     cuenta</button>
-                            </div>
-                            <div class="text-center mt-3">
-                                <button type="button" class="btn btn-link btn-sm"
-                                    style="color:var(--muted);font-size:.8rem" id="btn-changeurl"><i
-                                        class="fa-solid fa-arrow-left me-1"></i> Cambiar URL</button>
                             </div>
                         </div>
                     </div>
@@ -652,14 +624,16 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        var API = localStorage.getItem("ptb_api") || "";
+        // ====== CONFIGURACIÓN ======
+        var API = "http://localhost:8000";
+        // ===========================
+
         var token = localStorage.getItem("ptb_token") || null;
         var storedUser = localStorage.getItem("ptb_user") || "";
         var currentTeamId = null;
         var pendingDeletePkId = null;
 
         function saveSession() {
-            if (API) localStorage.setItem("ptb_api", API); else localStorage.removeItem("ptb_api");
             if (token) localStorage.setItem("ptb_token", token); else localStorage.removeItem("ptb_token");
             if (storedUser) localStorage.setItem("ptb_user", storedUser); else localStorage.removeItem("ptb_user");
         }
@@ -772,25 +746,16 @@
         }
 
         // Restore session
-        if (API && token) {
-            document.getElementById("api-url").value = API;
+        if (token) {
             document.getElementById("nav-username").textContent = storedUser;
             document.getElementById("nav-user").classList.remove("d-none");
             go("sec-main");
             setTimeout(showTeams, 50);
-        } else if (API) {
-            document.getElementById("api-url").value = API;
+        } else {
             go("sec-auth");
         }
 
         // Events
-        document.getElementById("btn-setapi").addEventListener("click", function (e) {
-            e.preventDefault();
-            API = document.getElementById("api-url").value.replace(/\/+$/, "");
-            if (!API) { notify("Introduce una URL"); return; }
-            saveSession(); go("sec-auth");
-        });
-
         document.getElementById("tab-login").addEventListener("click", function (e) {
             e.preventDefault();
             document.getElementById("tab-login").classList.add("active");
@@ -834,8 +799,6 @@
                 document.getElementById("tab-login").click();
             }).catch(function (e) { notify(e.message); });
         });
-
-        document.getElementById("btn-changeurl").addEventListener("click", function (e) { e.preventDefault(); go("sec-config"); });
 
         document.getElementById("btn-logout").addEventListener("click", function (e) {
             e.preventDefault(); token = null; currentTeamId = null; storedUser = "";
