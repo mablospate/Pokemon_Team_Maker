@@ -68,6 +68,31 @@
         "documentation": {}
     },
     {
+        "label": "jwt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "jwt",
+        "description": "jwt",
+        "detail": "jwt",
+        "documentation": {}
+    },
+    {
+        "label": "PasswordHasher",
+        "importPath": "argon2",
+        "description": "argon2",
+        "isExtraImport": true,
+        "detail": "argon2",
+        "documentation": {}
+    },
+    {
+        "label": "VerifyMismatchError",
+        "importPath": "argon2.exceptions",
+        "description": "argon2.exceptions",
+        "isExtraImport": true,
+        "detail": "argon2.exceptions",
+        "documentation": {}
+    },
+    {
         "label": "APIRouter",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -85,6 +110,14 @@
     },
     {
         "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -185,31 +218,6 @@
         "description": "sqlmodel",
         "isExtraImport": true,
         "detail": "sqlmodel",
-        "documentation": {}
-    },
-    {
-        "label": "PasswordHasher",
-        "importPath": "argon2",
-        "description": "argon2",
-        "isExtraImport": true,
-        "detail": "argon2",
-        "documentation": {}
-    },
-    {
-        "label": "VerifyMismatchError",
-        "importPath": "argon2.exceptions",
-        "description": "argon2.exceptions",
-        "isExtraImport": true,
-        "detail": "argon2.exceptions",
-        "documentation": {}
-    },
-    {
-        "label": "jwt",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "jwt",
-        "description": "jwt",
-        "detail": "jwt",
         "documentation": {}
     },
     {
@@ -315,6 +323,51 @@
         "description": ".venv.bin.activate_this",
         "peekOfCode": "sys.prefix = base",
         "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "register",
+        "kind": 2,
+        "importPath": "app.routers.auth",
+        "description": "app.routers.auth",
+        "peekOfCode": "def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password))\n    session.add(user)\n    session.commit()",
+        "detail": "app.routers.auth",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "app.routers.auth",
+        "description": "app.routers.auth",
+        "peekOfCode": "def login(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    user = session.exec(select(User).where(User.username == data.username)).first()\n    if not user:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Este nombre de usuario no existe en la base de datos\",\n        )\n    try:\n        ph.verify(user.hashed_password, data.password)\n    except VerifyMismatchError:",
+        "detail": "app.routers.auth",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routers.auth",
+        "description": "app.routers.auth",
+        "peekOfCode": "router = APIRouter(prefix=\"/auth\", tags=[\"Auth\"])\nph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )",
+        "detail": "app.routers.auth",
+        "documentation": {}
+    },
+    {
+        "label": "ph",
+        "kind": 5,
+        "importPath": "app.routers.auth",
+        "description": "app.routers.auth",
+        "peekOfCode": "ph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password))",
+        "detail": "app.routers.auth",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app.app",
+        "description": "app.app",
+        "peekOfCode": "app = FastAPI()\napp.include_router(auth.router)",
+        "detail": "app.app",
         "documentation": {}
     },
     {
