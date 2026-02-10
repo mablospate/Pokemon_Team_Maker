@@ -1,6 +1,6 @@
 from typing import List
-from sqlmodel import SQLModel, Field, Relationship
 
+from sqlmodel import Field, Relationship, SQLModel
 
 ############################################################
 #                        USER MODELS                       #
