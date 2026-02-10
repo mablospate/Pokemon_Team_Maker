@@ -221,6 +221,14 @@
         "documentation": {}
     },
     {
+        "label": "asynccontextmanager",
+        "importPath": "contextlib",
+        "description": "contextlib",
+        "isExtraImport": true,
+        "detail": "contextlib",
+        "documentation": {}
+    },
+    {
         "label": "BaseSettings",
         "importPath": "pydantic_settings",
         "description": "pydantic_settings",
@@ -366,7 +374,7 @@
         "kind": 5,
         "importPath": "app.app",
         "description": "app.app",
-        "peekOfCode": "app = FastAPI()\napp.include_router(auth.router)",
+        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.include_router(auth.router)",
         "detail": "app.app",
         "documentation": {}
     },
