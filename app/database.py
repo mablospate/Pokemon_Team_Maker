@@ -1,10 +1,8 @@
 from sqlmodel import SQLModel, Session, create_engine
 
+from .config import settings
 
-sqlite_file_name = "pokemon.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-engine = create_engine(sqlite_url)
+engine = create_engine(settings.database_url)
 
 
 def create_db():

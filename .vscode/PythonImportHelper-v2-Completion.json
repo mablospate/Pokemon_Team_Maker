@@ -68,6 +68,30 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timezone",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "Annotated",
         "importPath": "typing",
         "description": "typing",
@@ -190,6 +214,14 @@
     },
     {
         "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Response",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -568,7 +600,7 @@
         "kind": 5,
         "importPath": "app.app",
         "description": "app.app",
-        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\napp.include_router(auth.router)\napp.include_router(teams.router)",
+        "peekOfCode": "app = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n    expose_headers=[\"X-Refreshed-Token\"],\n)\napp.include_router(auth.router)",
         "detail": "app.app",
         "documentation": {}
     },
@@ -609,29 +641,11 @@
         "documentation": {}
     },
     {
-        "label": "sqlite_file_name",
-        "kind": 5,
-        "importPath": "app.database",
-        "description": "app.database",
-        "peekOfCode": "sqlite_file_name = \"pokemon.db\"\nsqlite_url = f\"sqlite:///{sqlite_file_name}\"\nengine = create_engine(sqlite_url)\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
-        "detail": "app.database",
-        "documentation": {}
-    },
-    {
-        "label": "sqlite_url",
-        "kind": 5,
-        "importPath": "app.database",
-        "description": "app.database",
-        "peekOfCode": "sqlite_url = f\"sqlite:///{sqlite_file_name}\"\nengine = create_engine(sqlite_url)\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
-        "detail": "app.database",
-        "documentation": {}
-    },
-    {
         "label": "engine",
         "kind": 5,
         "importPath": "app.database",
         "description": "app.database",
-        "peekOfCode": "engine = create_engine(sqlite_url)\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
+        "peekOfCode": "engine = create_engine(settings.database_url)\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
         "detail": "app.database",
         "documentation": {}
     },
@@ -640,7 +654,7 @@
         "kind": 2,
         "importPath": "app.dependencies",
         "description": "app.dependencies",
-        "peekOfCode": "def get_current_user(\n    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],\n    session: Annotated[Session, Depends(get_session)],\n) -> User:\n    try:\n        payload = jwt.decode(\n            credentials.credentials, settings.secret_key, algorithms=[\"HS256\"]\n        )\n        user = session.exec(select(User).where(User.id == payload[\"user_id\"])).first()\n        if not user:",
+        "peekOfCode": "def get_current_user(\n    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],\n    session: Annotated[Session, Depends(get_session)],\n    response: Response,\n) -> User:\n    try:\n        payload = jwt.decode(\n            credentials.credentials, settings.secret_key, algorithms=[\"HS256\"]\n        )\n        user = session.exec(select(User).where(User.id == payload[\"user_id\"])).first()",
         "detail": "app.dependencies",
         "documentation": {}
     },
@@ -649,7 +663,7 @@
         "kind": 5,
         "importPath": "app.dependencies",
         "description": "app.dependencies",
-        "peekOfCode": "security = HTTPBearer()\ndef get_current_user(\n    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],\n    session: Annotated[Session, Depends(get_session)],\n) -> User:\n    try:\n        payload = jwt.decode(\n            credentials.credentials, settings.secret_key, algorithms=[\"HS256\"]\n        )\n        user = session.exec(select(User).where(User.id == payload[\"user_id\"])).first()",
+        "peekOfCode": "security = HTTPBearer()\ndef get_current_user(\n    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],\n    session: Annotated[Session, Depends(get_session)],\n    response: Response,\n) -> User:\n    try:\n        payload = jwt.decode(\n            credentials.credentials, settings.secret_key, algorithms=[\"HS256\"]\n        )",
         "detail": "app.dependencies",
         "documentation": {}
     },
