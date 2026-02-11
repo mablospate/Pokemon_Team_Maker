@@ -365,6 +365,14 @@
         "documentation": {}
     },
     {
+        "label": "field_validator",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "BaseSettings",
         "importPath": "pydantic_settings",
         "description": "pydantic_settings",
@@ -609,7 +617,7 @@
         "kind": 6,
         "importPath": "app.config",
         "description": "app.config",
-        "peekOfCode": "class Settings(BaseSettings):\n    secret_key: str\n    database_url: str\n    class Config:\n        env_file = \".env\"\nsettings = Settings()",
+        "peekOfCode": "class Settings(BaseSettings):\n    secret_key: str\n    database_url: str\n    @field_validator(\"database_url\")\n    @classmethod\n    def fix_postgres_scheme(cls, v: str) -> str:\n        if v.startswith(\"postgres://\"):\n            return v.replace(\"postgres://\", \"postgresql://\", 1)\n        return v\n    class Config:",
         "detail": "app.config",
         "documentation": {}
     },
