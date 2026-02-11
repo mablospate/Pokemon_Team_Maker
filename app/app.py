@@ -32,6 +32,3 @@ app.include_router(teams.router)
 @app.get("/", include_in_schema=False)
 async def serve_frontend():
     return FileResponse(FRONT_HTML)
-
-
-# Esta linea está para poder repetir el despliegue de docker
