@@ -12,3 +12,4 @@ wheels/
 .DS_Store
 __pycache__/
 *.db
+.vscode/PythonImportHelper-v2-Completion.json
