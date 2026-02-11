@@ -19,7 +19,7 @@ Aplicacion web para crear y gestionar equipos Pokemon. Proyecto personal de form
 | Backend       | FastAPI + Uvicorn                |
 | Base de datos | SQLite via SQLModel              |
 | Auth          | JWT (PyJWT) + Argon2             |
-| Frontend      | HTML + vanilla JS + Bootstrap 5  |
+| Frontend      | HTML + vanilla JS + Bootstrap 5 (generado con IA) |
 | Deploy        | Docker + GitHub Actions + Render |
 
 ## API
@@ -62,6 +62,10 @@ docker run -p 8000:8000 pokemon-team-builder
 ```
 
 La app estara disponible en `http://localhost:8000`.
+
+## Nota sobre el frontend
+
+El frontend (`front.html`) ha sido generado integramente con IA. El objetivo de este proyecto es la formacion en desarrollo de APIs REST con Python y FastAPI, no el desarrollo frontend. El frontend existe unicamente como interfaz visual para consumir y demostrar la API, pero todo el trabajo manual y el foco de aprendizaje esta en el backend: diseño de endpoints, modelos de datos, autenticacion, y despliegue.
 
 ## Sobre el proyecto
 
