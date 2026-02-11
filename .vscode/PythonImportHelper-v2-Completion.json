@@ -44,6 +44,30 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timezone",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "Annotated",
         "importPath": "typing",
         "description": "typing",
@@ -428,6 +452,15 @@
         "importPath": "app.routers.auth",
         "description": "app.routers.auth",
         "peekOfCode": "def login(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    user = session.exec(select(User).where(User.username == data.username)).first()\n    if not user:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Este nombre de usuario no existe en la base de datos\",\n        )\n    try:\n        ph.verify(user.hashed_password, data.password)\n    except VerifyMismatchError:",
+        "detail": "app.routers.auth",
+        "documentation": {}
+    },
+    {
+        "label": "TOKEN_LIFETIME",
+        "kind": 5,
+        "importPath": "app.routers.auth",
+        "description": "app.routers.auth",
+        "peekOfCode": "TOKEN_LIFETIME = timedelta(minutes=5)\nrouter = APIRouter(prefix=\"/auth\", tags=[\"Auth\"])\nph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",",
         "detail": "app.routers.auth",
         "documentation": {}
     },

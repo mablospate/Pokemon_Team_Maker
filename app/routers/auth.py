@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import jwt
@@ -9,6 +10,8 @@ from sqlmodel import Session, select
 from ..config import settings
 from ..database import get_session
 from ..models import User, UserCreate, UserPublic
+
+TOKEN_LIFETIME = timedelta(minutes=5)
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 ph = PasswordHasher()
@@ -43,5 +46,9 @@ def login(data: UserCreate, session: Annotated[Session, Depends(get_session)]):
         raise HTTPException(
             status_code=401, detail="Nombre de usuario o contraseña incorrectos"
         )
-    token = jwt.encode({"user_id": user.id}, settings.secret_key, algorithm="HS256")
+    token = jwt.encode(
+        {"user_id": user.id, "exp": datetime.now(timezone.utc) + TOKEN_LIFETIME},
+        settings.secret_key,
+        algorithm="HS256",
+    )
     return {"access_token": token}
