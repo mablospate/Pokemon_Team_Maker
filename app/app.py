@@ -1,10 +1,14 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from .database import create_db
 from .routers import auth, teams
+
+FRONT_HTML = Path(__file__).resolve().parent.parent / "front.html"
 
 
 @asynccontextmanager
@@ -23,3 +27,8 @@ app.add_middleware(
 )
 app.include_router(auth.router)
 app.include_router(teams.router)
+
+
+@app.get("/", include_in_schema=False)
+async def serve_frontend():
+    return FileResponse(FRONT_HTML)

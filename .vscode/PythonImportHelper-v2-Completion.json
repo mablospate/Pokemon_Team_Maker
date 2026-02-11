@@ -285,11 +285,27 @@
         "documentation": {}
     },
     {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
         "label": "CORSMiddleware",
         "importPath": "fastapi.middleware.cors",
         "description": "fastapi.middleware.cors",
         "isExtraImport": true,
         "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
+        "label": "FileResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
         "documentation": {}
     },
     {
@@ -503,6 +519,15 @@
         "description": "app.routers.teams",
         "peekOfCode": "router = APIRouter(prefix=\"/teams\", tags=[\"Teams\"])\n@router.post(\"/\", response_model=TeamPublic)\ndef create_team(\n    data: TeamCreate,\n    user: Annotated[User, Depends(get_current_user)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = Team(name=data.name, user_id=user.id)\n    session.add(team)\n    session.commit()",
         "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "FRONT_HTML",
+        "kind": 5,
+        "importPath": "app.app",
+        "description": "app.app",
+        "peekOfCode": "FRONT_HTML = Path(__file__).resolve().parent.parent / \"front.html\"\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    create_db()  # ← crea las tablas al arrancar\n    yield\napp = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,",
+        "detail": "app.app",
         "documentation": {}
     },
     {
