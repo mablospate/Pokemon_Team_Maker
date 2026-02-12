@@ -8,7 +8,7 @@ from sqlmodel import Session, select
 
 from .config import settings
 from .database import get_session
-from .models import User
+from .models import Role, User
 from .routers.auth import TOKEN_LIFETIME
 
 security = HTTPBearer()
@@ -35,3 +35,19 @@ def get_current_user(
         return user
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
+
+
+def require_moderator(
+    user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    if user.role not in (Role.MODERATOR, Role.ADMIN):
+        raise HTTPException(status_code=403, detail="Se requiere rol de moderador")
+    return user
+
+
+def require_admin(
+    user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    if user.role != Role.ADMIN:
+        raise HTTPException(status_code=403, detail="Se requiere rol de administrador")
+    return user

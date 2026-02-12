@@ -116,6 +116,14 @@
         "documentation": {}
     },
     {
+        "label": "Annotated",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -141,11 +149,43 @@
         "documentation": {}
     },
     {
+        "label": "PasswordHasher",
+        "importPath": "argon2",
+        "description": "argon2",
+        "isExtraImport": true,
+        "detail": "argon2",
+        "documentation": {}
+    },
+    {
         "label": "VerifyMismatchError",
         "importPath": "argon2.exceptions",
         "description": "argon2.exceptions",
         "isExtraImport": true,
         "detail": "argon2.exceptions",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
         "documentation": {}
     },
     {
@@ -261,6 +301,22 @@
         "documentation": {}
     },
     {
+        "label": "Session",
+        "importPath": "sqlmodel",
+        "description": "sqlmodel",
+        "isExtraImport": true,
+        "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlmodel",
+        "description": "sqlmodel",
+        "isExtraImport": true,
+        "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
         "label": "SQLModel",
         "importPath": "sqlmodel",
         "description": "sqlmodel",
@@ -278,6 +334,14 @@
     },
     {
         "label": "create_engine",
+        "importPath": "sqlmodel",
+        "description": "sqlmodel",
+        "isExtraImport": true,
+        "detail": "sqlmodel",
+        "documentation": {}
+    },
+    {
+        "label": "select",
         "importPath": "sqlmodel",
         "description": "sqlmodel",
         "isExtraImport": true,
@@ -322,14 +386,6 @@
         "description": "sqlmodel",
         "isExtraImport": true,
         "detail": "sqlmodel",
-        "documentation": {}
-    },
-    {
-        "label": "User",
-        "importPath": "app.models",
-        "description": "app.models",
-        "isExtraImport": true,
-        "detail": "app.models",
         "documentation": {}
     },
     {
@@ -394,6 +450,15 @@
         "description": "fastapi.security",
         "isExtraImport": true,
         "detail": "fastapi.security",
+        "documentation": {}
+    },
+    {
+        "label": "enum",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "enum",
+        "description": "enum",
+        "detail": "enum",
         "documentation": {}
     },
     {
@@ -482,7 +547,7 @@
         "kind": 2,
         "importPath": "app.routers.auth",
         "description": "app.routers.auth",
-        "peekOfCode": "def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password))\n    session.add(user)\n    session.commit()",
+        "peekOfCode": "def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)\n    session.add(user)\n    session.commit()",
         "detail": "app.routers.auth",
         "documentation": {}
     },
@@ -518,7 +583,7 @@
         "kind": 5,
         "importPath": "app.routers.auth",
         "description": "app.routers.auth",
-        "peekOfCode": "ph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password))",
+        "peekOfCode": "ph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)",
         "detail": "app.routers.auth",
         "documentation": {}
     },
@@ -586,6 +651,42 @@
         "documentation": {}
     },
     {
+        "label": "read_user_teams",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def read_user_teams(\n    user_id: int,\n    moderator: Annotated[User, Depends(require_moderator)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    user = session.get(User, user_id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\"Usuario no encontrado\")\n    return session.exec(select(Team).where(Team.user_id == user_id)).all()\n@moderation_router.delete(\"/{user_id}/teams/{team_id}\")",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "delete_user_team",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def delete_user_team(\n    user_id: int,\n    team_id: int,\n    moderator: Annotated[User, Depends(require_moderator)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(Team.id == team_id, Team.user_id == user_id)\n    ).first()\n    if not team:",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "read_user_team_pokemon",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def read_user_team_pokemon(\n    user_id: int,\n    team_id: int,\n    moderator: Annotated[User, Depends(require_moderator)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(Team.id == team_id, Team.user_id == user_id)\n    ).first()\n    if not team:",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "delete_user_team_pokemon",
+        "kind": 2,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "def delete_user_team_pokemon(\n    user_id: int,\n    team_id: int,\n    pokemon_id: int,\n    moderator: Annotated[User, Depends(require_moderator)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    team = session.exec(\n        select(Team).where(Team.id == team_id, Team.user_id == user_id)\n    ).first()",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
         "label": "router",
         "kind": 5,
         "importPath": "app.routers.teams",
@@ -595,11 +696,56 @@
         "documentation": {}
     },
     {
+        "label": "moderation_router",
+        "kind": 5,
+        "importPath": "app.routers.teams",
+        "description": "app.routers.teams",
+        "peekOfCode": "moderation_router = APIRouter(prefix=\"/users\", tags=[\"Moderation\"])\n@moderation_router.get(\"/{user_id}/teams\", response_model=list[TeamPublic])\ndef read_user_teams(\n    user_id: int,\n    moderator: Annotated[User, Depends(require_moderator)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    user = session.get(User, user_id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\"Usuario no encontrado\")",
+        "detail": "app.routers.teams",
+        "documentation": {}
+    },
+    {
+        "label": "list_users",
+        "kind": 2,
+        "importPath": "app.routers.users",
+        "description": "app.routers.users",
+        "peekOfCode": "def list_users(\n    admin: Annotated[User, Depends(require_admin)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    return session.exec(select(User)).all()\n@router.patch(\"/{user_id}/role\", response_model=UserPublic)\ndef change_user_role(\n    user_id: int,\n    data: UserRoleUpdate,\n    admin: Annotated[User, Depends(require_admin)],",
+        "detail": "app.routers.users",
+        "documentation": {}
+    },
+    {
+        "label": "change_user_role",
+        "kind": 2,
+        "importPath": "app.routers.users",
+        "description": "app.routers.users",
+        "peekOfCode": "def change_user_role(\n    user_id: int,\n    data: UserRoleUpdate,\n    admin: Annotated[User, Depends(require_admin)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    user = session.get(User, user_id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\"Usuario no encontrado\")\n    user.role = data.role",
+        "detail": "app.routers.users",
+        "documentation": {}
+    },
+    {
+        "label": "delete_user",
+        "kind": 2,
+        "importPath": "app.routers.users",
+        "description": "app.routers.users",
+        "peekOfCode": "def delete_user(\n    user_id: int,\n    admin: Annotated[User, Depends(require_admin)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    user = session.get(User, user_id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\"Usuario no encontrado\")\n    for team in user.teams:\n        for pokemon in team.pokemon:",
+        "detail": "app.routers.users",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routers.users",
+        "description": "app.routers.users",
+        "peekOfCode": "router = APIRouter(prefix=\"/users\", tags=[\"Admin\"])\n@router.get(\"/\", response_model=list[UserPublic])\ndef list_users(\n    admin: Annotated[User, Depends(require_admin)],\n    session: Annotated[Session, Depends(get_session)],\n):\n    return session.exec(select(User)).all()\n@router.patch(\"/{user_id}/role\", response_model=UserPublic)\ndef change_user_role(\n    user_id: int,",
+        "detail": "app.routers.users",
+        "documentation": {}
+    },
+    {
         "label": "FRONT_HTML",
         "kind": 5,
         "importPath": "app.app",
         "description": "app.app",
-        "peekOfCode": "FRONT_HTML = Path(__file__).resolve().parent.parent / \"front.html\"\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    create_db()  # ← crea las tablas al arrancar\n    yield\napp = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,",
+        "peekOfCode": "FRONT_HTML = Path(__file__).resolve().parent.parent / \"front.html\"\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    create_db()\n    seed_admin()\n    yield\napp = FastAPI(title=\"Pokemon Team Builder\", lifespan=lifespan)\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],",
         "detail": "app.app",
         "documentation": {}
     },
@@ -617,7 +763,7 @@
         "kind": 6,
         "importPath": "app.config",
         "description": "app.config",
-        "peekOfCode": "class Settings(BaseSettings):\n    secret_key: str\n    database_url: str\n    @field_validator(\"database_url\")\n    @classmethod\n    def fix_postgres_scheme(cls, v: str) -> str:\n        if v.startswith(\"postgres://\"):\n            return v.replace(\"postgres://\", \"postgresql://\", 1)\n        return v\n    class Config:",
+        "peekOfCode": "class Settings(BaseSettings):\n    secret_key: str\n    database_url: str\n    admin_username: str | None = None\n    admin_password: str | None = None\n    @field_validator(\"database_url\")\n    @classmethod\n    def fix_postgres_scheme(cls, v: str) -> str:\n        if v.startswith(\"postgres://\"):\n            return v.replace(\"postgres://\", \"postgresql://\", 1)",
         "detail": "app.config",
         "documentation": {}
     },
@@ -635,7 +781,16 @@
         "kind": 2,
         "importPath": "app.database",
         "description": "app.database",
-        "peekOfCode": "def create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
+        "peekOfCode": "def create_db():\n    SQLModel.metadata.create_all(engine)\ndef seed_admin():\n    if not settings.admin_username or not settings.admin_password:\n        return\n    with Session(engine) as session:\n        user = session.exec(\n            select(User).where(User.username == settings.admin_username)\n        ).first()\n        if not user:",
+        "detail": "app.database",
+        "documentation": {}
+    },
+    {
+        "label": "seed_admin",
+        "kind": 2,
+        "importPath": "app.database",
+        "description": "app.database",
+        "peekOfCode": "def seed_admin():\n    if not settings.admin_username or not settings.admin_password:\n        return\n    with Session(engine) as session:\n        user = session.exec(\n            select(User).where(User.username == settings.admin_username)\n        ).first()\n        if not user:\n            user = User(\n                username=settings.admin_username,",
         "detail": "app.database",
         "documentation": {}
     },
@@ -653,7 +808,16 @@
         "kind": 5,
         "importPath": "app.database",
         "description": "app.database",
-        "peekOfCode": "engine = create_engine(settings.database_url)\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef get_session():\n    with Session(engine) as session:\n        yield session",
+        "peekOfCode": "engine = create_engine(settings.database_url)\nph = PasswordHasher()\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef seed_admin():\n    if not settings.admin_username or not settings.admin_password:\n        return\n    with Session(engine) as session:\n        user = session.exec(\n            select(User).where(User.username == settings.admin_username)",
+        "detail": "app.database",
+        "documentation": {}
+    },
+    {
+        "label": "ph",
+        "kind": 5,
+        "importPath": "app.database",
+        "description": "app.database",
+        "peekOfCode": "ph = PasswordHasher()\ndef create_db():\n    SQLModel.metadata.create_all(engine)\ndef seed_admin():\n    if not settings.admin_username or not settings.admin_password:\n        return\n    with Session(engine) as session:\n        user = session.exec(\n            select(User).where(User.username == settings.admin_username)\n        ).first()",
         "detail": "app.database",
         "documentation": {}
     },
@@ -667,6 +831,24 @@
         "documentation": {}
     },
     {
+        "label": "require_moderator",
+        "kind": 2,
+        "importPath": "app.dependencies",
+        "description": "app.dependencies",
+        "peekOfCode": "def require_moderator(\n    user: Annotated[User, Depends(get_current_user)],\n) -> User:\n    if user.role not in (Role.MODERATOR, Role.ADMIN):\n        raise HTTPException(status_code=403, detail=\"Se requiere rol de moderador\")\n    return user\ndef require_admin(\n    user: Annotated[User, Depends(get_current_user)],\n) -> User:\n    if user.role != Role.ADMIN:",
+        "detail": "app.dependencies",
+        "documentation": {}
+    },
+    {
+        "label": "require_admin",
+        "kind": 2,
+        "importPath": "app.dependencies",
+        "description": "app.dependencies",
+        "peekOfCode": "def require_admin(\n    user: Annotated[User, Depends(get_current_user)],\n) -> User:\n    if user.role != Role.ADMIN:\n        raise HTTPException(status_code=403, detail=\"Se requiere rol de administrador\")\n    return user",
+        "detail": "app.dependencies",
+        "documentation": {}
+    },
+    {
         "label": "security",
         "kind": 5,
         "importPath": "app.dependencies",
@@ -676,11 +858,20 @@
         "documentation": {}
     },
     {
+        "label": "Role",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class Role(str, enum.Enum):\n    USER = \"user\"\n    MODERATOR = \"moderator\"\n    ADMIN = \"admin\"\n############################################################\n#                        USER MODELS                       #\n############################################################\nclass UserBase(SQLModel):\n    username: str = Field(unique=True)\nclass UserCreate(UserBase):",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
         "label": "UserBase",
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class UserBase(SQLModel):\n    username: str = Field(unique=True)\nclass UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################",
+        "peekOfCode": "class UserBase(SQLModel):\n    username: str = Field(unique=True)\nclass UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n    role: Role",
         "detail": "app.models",
         "documentation": {}
     },
@@ -689,7 +880,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################",
+        "peekOfCode": "class UserCreate(UserBase):\n    password: str\nclass UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n    role: Role\nclass UserRoleUpdate(SQLModel):\n    role: Role",
         "detail": "app.models",
         "documentation": {}
     },
@@ -698,7 +889,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "peekOfCode": "class UserUpdate(SQLModel):\n    username: str | None = None\n    password: str | None = None\nclass UserPublic(UserBase):\n    id: int\n    role: Role\nclass UserRoleUpdate(SQLModel):\n    role: Role\n############################################################\n#                     USER IN DATABASE                    #",
         "detail": "app.models",
         "documentation": {}
     },
@@ -707,7 +898,16 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class UserPublic(UserBase):\n    id: int\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")\n############################################################",
+        "peekOfCode": "class UserPublic(UserBase):\n    id: int\n    role: Role\nclass UserRoleUpdate(SQLModel):\n    role: Role\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)",
+        "detail": "app.models",
+        "documentation": {}
+    },
+    {
+        "label": "UserRoleUpdate",
+        "kind": 6,
+        "importPath": "app.models",
+        "description": "app.models",
+        "peekOfCode": "class UserRoleUpdate(SQLModel):\n    role: Role\n############################################################\n#                     USER IN DATABASE                    #\n############################################################\nclass User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    role: Role = Field(default=Role.USER)\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")",
         "detail": "app.models",
         "documentation": {}
     },
@@ -716,7 +916,7 @@
         "kind": 6,
         "importPath": "app.models",
         "description": "app.models",
-        "peekOfCode": "class User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")\n############################################################\n#                        TEAM MODELS                       #\n############################################################\nclass TeamBase(SQLModel):\n    name: str\nclass TeamCreate(TeamBase):",
+        "peekOfCode": "class User(UserBase, table=True):\n    id: int | None = Field(default=None, primary_key=True)\n    hashed_password: str\n    role: Role = Field(default=Role.USER)\n    teams: List[\"Team\"] = Relationship(back_populates=\"user\")\n############################################################\n#                        TEAM MODELS                       #\n############################################################\nclass TeamBase(SQLModel):\n    name: str",
         "detail": "app.models",
         "documentation": {}
     },

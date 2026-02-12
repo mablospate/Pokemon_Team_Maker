@@ -5,6 +5,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     secret_key: str
     database_url: str
+    admin_username: str | None = None
+    admin_password: str | None = None
 
     @field_validator("database_url")
     @classmethod

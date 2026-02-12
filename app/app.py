@@ -5,15 +5,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from .database import create_db
-from .routers import auth, teams
+from .database import create_db, seed_admin
+from .routers import auth, teams, users
 
 FRONT_HTML = Path(__file__).resolve().parent.parent / "front.html"
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db()  # ← crea las tablas al arrancar
+    create_db()
+    seed_admin()
     yield
 
 
@@ -28,6 +29,8 @@ app.add_middleware(
 )
 app.include_router(auth.router)
 app.include_router(teams.router)
+app.include_router(teams.moderation_router)
+app.include_router(users.router)
 
 
 @app.get("/", include_in_schema=False)

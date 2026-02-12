@@ -1,0 +1,37 @@
+@startuml
+skinparam actorstyle hollow
+left to right direction
+actor User as u
+actor Moderator as m
+actor Admin as a
+
+m --|> u
+a --|> m
+
+rectangle "Pokemon Team Manager" as app{
+    frame "General Use Cases"{
+        u --> (Create Team)
+        u --> (Read my Teams)
+        u --> (Rename one of my Teams)
+        u --> (Delete one of my Teams)
+        u --> (Add Pokemon to one of my Teams)
+        u --> (Read Pokemon in one of my Teams)
+        u --> (Delete Pokemon from one of my Teams)
+    }
+    frame "Moderator operations"{
+        m --> (Read User's Team)
+        m --> (Delete User's Team)
+        m --> (Read Pokemon in one of User's Teams)
+        m --> (Delete Pokemon from one of User's Teams)
+    }
+    frame "Admin operations"{
+        a --> (List Users)
+        a --> (Change a User's Role)
+        a --> (Delete User)
+    }
+}
+
+
+
+
+@enduml

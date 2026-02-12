@@ -1,0 +1,62 @@
+@startuml
+
+enum Role{
+    USER
+    MODERATOR
+    ADMIN
+}
+
+'MODELS
+class UserBase{
+    username: str
+}
+
+class UserCreate extends UserBase{
+    password: str
+}
+
+class UserPublic extends UserBase{
+    id: int
+    role: Role
+}
+
+class TeamBase{
+    name: str
+}
+class TeamCreate extends TeamBase
+class TeamPublic extends TeamBase{
+    id: int
+    user_id: int
+}
+
+class PokemonBase{
+    name: str
+    species: str
+    level: int
+}
+class PokemonCreate extends PokemonBase
+class PokemonPublic extends PokemonBase{
+    id: int
+    team_id: int
+}
+
+'DATABASE
+class User extends UserBase{
+    id: int
+    hashed_password: str
+    role: Role
+}
+User *-- Team
+class Team extends TeamBase{
+    id: int
+    user_id: int
+}
+Team *-- Pokemon
+class Pokemon extends PokemonBase{
+    id: int
+    team_id: int
+}
+
+note "The *Update version of\neach model won't be included\nbecause its a replica\nof the base model" as n1
+
+@enduml

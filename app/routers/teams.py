@@ -3,9 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from app.models import User
 from ..database import get_session
-from ..dependencies import get_current_user
+from ..dependencies import get_current_user, require_moderator
 from ..models import (
     Pokemon,
     PokemonCreate,
@@ -136,6 +135,84 @@ def delete_pokemon(
         select(Team).where(Team.id == team_id, Team.user_id == user.id)
     ).first()
     if not team:
+        raise HTTPException(status_code=404, detail="Pokemon no encontrado")
+    session.delete(pokemon)
+    session.commit()
+    return {
+        "msg": f"El pokemon {pokemon.species} llamado {pokemon.name} ha sido eliminado"
+    }
+
+
+############################################################
+#                  MODERATOR OPERATIONS                    #
+############################################################
+
+moderation_router = APIRouter(prefix="/users", tags=["Moderation"])
+
+
+@moderation_router.get("/{user_id}/teams", response_model=list[TeamPublic])
+def read_user_teams(
+    user_id: int,
+    moderator: Annotated[User, Depends(require_moderator)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return session.exec(select(Team).where(Team.user_id == user_id)).all()
+
+
+@moderation_router.delete("/{user_id}/teams/{team_id}")
+def delete_user_team(
+    user_id: int,
+    team_id: int,
+    moderator: Annotated[User, Depends(require_moderator)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    team = session.exec(
+        select(Team).where(Team.id == team_id, Team.user_id == user_id)
+    ).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    for pokemon in team.pokemon:
+        session.delete(pokemon)
+    session.delete(team)
+    session.commit()
+    return {"msg": f"El equipo {team.name} ha sido eliminado"}
+
+
+@moderation_router.get("/{user_id}/teams/{team_id}", response_model=TeamPublicWithPokemon)
+def read_user_team_pokemon(
+    user_id: int,
+    team_id: int,
+    moderator: Annotated[User, Depends(require_moderator)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    team = session.exec(
+        select(Team).where(Team.id == team_id, Team.user_id == user_id)
+    ).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    return team
+
+
+@moderation_router.delete("/{user_id}/teams/{team_id}/pokemon/{pokemon_id}")
+def delete_user_team_pokemon(
+    user_id: int,
+    team_id: int,
+    pokemon_id: int,
+    moderator: Annotated[User, Depends(require_moderator)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    team = session.exec(
+        select(Team).where(Team.id == team_id, Team.user_id == user_id)
+    ).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    pokemon = session.exec(
+        select(Pokemon).where(Pokemon.id == pokemon_id, Pokemon.team_id == team_id)
+    ).first()
+    if not pokemon:
         raise HTTPException(status_code=404, detail="Pokemon no encontrado")
     session.delete(pokemon)
     session.commit()

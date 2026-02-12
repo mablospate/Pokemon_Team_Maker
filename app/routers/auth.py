@@ -9,7 +9,7 @@ from sqlmodel import Session, select
 
 from ..config import settings
 from ..database import get_session
-from ..models import User, UserCreate, UserPublic
+from ..models import Role, User, UserCreate, UserPublic
 
 TOKEN_LIFETIME = timedelta(minutes=5)
 
@@ -25,7 +25,7 @@ def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]
             status_code=400,
             detail="Este nombre de usuario ya existe en la base de datos",
         )
-    user = User(username=data.username, hashed_password=ph.hash(data.password))
+    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)
     session.add(user)
     session.commit()
     session.refresh(user)

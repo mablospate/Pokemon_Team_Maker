@@ -1,6 +1,13 @@
+import enum
 from typing import List
 
 from sqlmodel import Field, Relationship, SQLModel
+
+
+class Role(str, enum.Enum):
+    USER = "user"
+    MODERATOR = "moderator"
+    ADMIN = "admin"
 
 ############################################################
 #                        USER MODELS                       #
@@ -22,6 +29,11 @@ class UserUpdate(SQLModel):
 
 class UserPublic(UserBase):
     id: int
+    role: Role
+
+
+class UserRoleUpdate(SQLModel):
+    role: Role
 
 
 ############################################################
@@ -32,6 +44,7 @@ class UserPublic(UserBase):
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
+    role: Role = Field(default=Role.USER)
     teams: List["Team"] = Relationship(back_populates="user")
 
 
