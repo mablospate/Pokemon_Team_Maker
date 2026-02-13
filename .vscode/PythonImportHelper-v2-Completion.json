@@ -547,7 +547,7 @@
         "kind": 2,
         "importPath": "app.routers.auth",
         "description": "app.routers.auth",
-        "peekOfCode": "def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)\n    session.add(user)\n    session.commit()",
+        "peekOfCode": "def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(\n        username=data.username, hashed_password=ph.hash(data.password), role=Role.USER\n    )",
         "detail": "app.routers.auth",
         "documentation": {}
     },
@@ -583,7 +583,7 @@
         "kind": 5,
         "importPath": "app.routers.auth",
         "description": "app.routers.auth",
-        "peekOfCode": "ph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)",
+        "peekOfCode": "ph = PasswordHasher()\n@router.post(\"/register\", response_model=UserPublic)\ndef register(data: UserCreate, session: Annotated[Session, Depends(get_session)]):\n    existing = session.exec(select(User).where(User.username == data.username)).first()\n    if existing:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Este nombre de usuario ya existe en la base de datos\",\n        )\n    user = User(",
         "detail": "app.routers.auth",
         "documentation": {}
     },

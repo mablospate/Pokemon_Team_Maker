@@ -181,7 +181,9 @@ def delete_user_team(
     return {"msg": f"El equipo {team.name} ha sido eliminado"}
 
 
-@moderation_router.get("/{user_id}/teams/{team_id}", response_model=TeamPublicWithPokemon)
+@moderation_router.get(
+    "/{user_id}/teams/{team_id}", response_model=TeamPublicWithPokemon
+)
 def read_user_team_pokemon(
     user_id: int,
     team_id: int,

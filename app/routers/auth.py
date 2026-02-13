@@ -25,7 +25,9 @@ def register(data: UserCreate, session: Annotated[Session, Depends(get_session)]
             status_code=400,
             detail="Este nombre de usuario ya existe en la base de datos",
         )
-    user = User(username=data.username, hashed_password=ph.hash(data.password), role=Role.USER)
+    user = User(
+        username=data.username, hashed_password=ph.hash(data.password), role=Role.USER
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
