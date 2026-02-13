@@ -15,6 +15,7 @@ from ..models import (
     TeamPublicWithPokemon,
     TeamUpdate,
     User,
+    UserPublic,
 )
 
 router = APIRouter(prefix="/teams", tags=["Teams"])
@@ -148,6 +149,14 @@ def delete_pokemon(
 ############################################################
 
 moderation_router = APIRouter(prefix="/users", tags=["Moderation"])
+
+
+@moderation_router.get("/", response_model=list[UserPublic])
+def list_users_for_moderation(
+    moderator: Annotated[User, Depends(require_moderator)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    return session.exec(select(User)).all()
 
 
 @moderation_router.get("/{user_id}/teams", response_model=list[TeamPublic])

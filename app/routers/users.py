@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from ..database import get_session
 from ..dependencies import require_admin
@@ -14,14 +14,6 @@ from ..models import (
 )
 
 router = APIRouter(prefix="/users", tags=["Admin"])
-
-
-@router.get("/", response_model=list[UserPublic])
-def list_users(
-    admin: Annotated[User, Depends(require_admin)],
-    session: Annotated[Session, Depends(get_session)],
-):
-    return session.exec(select(User)).all()
 
 
 @router.patch("/{user_id}/role", response_model=UserPublic)

@@ -672,19 +672,20 @@
             <!-- Moderation -->
             <div id="v-mod" class="d-none">
                 <div class="mod-search">
-                    <h6><i class="fa-solid fa-magnifying-glass me-1" style="color:var(--accent)"></i> Buscar equipos de
-                        usuario</h6>
-                    <div class="row g-2 align-items-end">
-                        <div class="col"><input id="mod-userid" type="number"
-                                class="form-control form-control-dark form-control-sm" placeholder="ID del usuario">
-                        </div>
-                        <div class="col-auto"><button type="button" class="btn btn-primary-custom btn-sm"
-                                id="btn-mod-search"><i class="fa-solid fa-search me-1"></i> Buscar</button></div>
-                    </div>
+                    <h6><i class="fa-solid fa-users me-1" style="color:var(--accent)"></i> Usuarios</h6>
+                    <input id="mod-filter" type="text" class="form-control form-control-dark form-control-sm mb-3"
+                        placeholder="Filtrar por ID o nombre...">
                 </div>
-                <div id="mod-results" class="d-none">
+                <div id="mod-users-list" class="d-flex flex-column gap-2"></div>
+                <div id="mod-no-users" class="empty-state d-none">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <p>No hay usuarios.</p>
+                </div>
+                <div id="mod-results" class="d-none mt-3">
                     <div class="section-header">
                         <h4 id="mod-user-title"></h4>
+                        <button type="button" class="btn btn-ghost btn-sm" id="btn-mod-back-users"><i
+                                class="fa-solid fa-arrow-left me-1"></i> Volver</button>
                     </div>
                     <div id="mod-teams-list" class="d-flex flex-column gap-2"></div>
                     <div id="mod-no-teams" class="empty-state d-none">
@@ -949,6 +950,7 @@
                 showTeams();
             } else if (view === "mod") {
                 document.getElementById("v-mod").classList.remove("d-none");
+                loadModUsers();
             } else if (view === "admin") {
                 document.getElementById("v-admin").classList.remove("d-none");
                 loadUsers();
@@ -1026,13 +1028,52 @@
         }
 
         // ====== MODERATION ======
-        function searchUserTeams() {
-            var uid = document.getElementById("mod-userid").value.trim();
-            if (!uid) { notify("Introduce un ID de usuario"); return; }
-            modUserId = parseInt(uid);
+        var modAllUsers = [];
+        var modUsername = "";
+
+        function loadModUsers() {
+            api("/users/").then(function (users) {
+                modAllUsers = users;
+                document.getElementById("mod-filter").value = "";
+                document.getElementById("mod-filter").parentElement.classList.remove("d-none");
+                document.getElementById("mod-users-list").classList.remove("d-none");
+                document.getElementById("mod-results").classList.add("d-none");
+                renderModUsers(users);
+            }).catch(function (e) { notify(e.message); });
+        }
+
+        function renderModUsers(users) {
+            var c = document.getElementById("mod-users-list"); c.innerHTML = "";
+            document.getElementById("mod-no-users").classList.toggle("d-none", users.length > 0);
+            users.forEach(function (u) {
+                var d = document.createElement("div");
+                d.className = "team-card fade-in";
+                d.style.cursor = "pointer";
+                d.innerHTML = '<span class="team-name"><i class="fa-solid fa-user me-2" style="color:var(--accent)"></i>' + u.username + '</span>' +
+                    '<span class="team-id">#' + u.id + ' <span class="role-badge role-' + u.role + '" style="margin-left:6px">' + u.role + '</span></span>';
+                d.addEventListener("click", function (e) { e.preventDefault(); selectModUser(u.id, u.username); });
+                c.appendChild(d);
+            });
+        }
+
+        function filterModUsers() {
+            var q = document.getElementById("mod-filter").value.trim().toLowerCase();
+            if (!q) { renderModUsers(modAllUsers); return; }
+            var filtered = modAllUsers.filter(function (u) {
+                return u.username.toLowerCase().indexOf(q) !== -1 || String(u.id).indexOf(q) !== -1;
+            });
+            renderModUsers(filtered);
+        }
+
+        function selectModUser(userId, username) {
+            modUserId = userId;
+            modUsername = username;
+            document.getElementById("mod-users-list").classList.add("d-none");
+            document.getElementById("mod-filter").parentElement.classList.add("d-none");
+            document.getElementById("mod-no-users").classList.add("d-none");
             api("/users/" + modUserId + "/teams").then(function (teams) {
                 document.getElementById("mod-results").classList.remove("d-none");
-                document.getElementById("mod-user-title").textContent = "Equipos del usuario #" + modUserId;
+                document.getElementById("mod-user-title").textContent = "Equipos de " + username + " (#" + modUserId + ")";
                 var c = document.getElementById("mod-teams-list"); c.innerHTML = "";
                 document.getElementById("mod-no-teams").classList.toggle("d-none", teams.length > 0);
                 teams.forEach(function (t) {
@@ -1043,6 +1084,13 @@
                     c.appendChild(d);
                 });
             }).catch(function (e) { notify(e.message); });
+        }
+
+        function backToModUsers() {
+            document.getElementById("mod-results").classList.add("d-none");
+            document.getElementById("mod-users-list").classList.remove("d-none");
+            document.getElementById("mod-filter").parentElement.classList.remove("d-none");
+            filterModUsers();
         }
 
         function openModTeam(teamId, name) {
@@ -1260,18 +1308,19 @@
         });
 
         // ====== MODERATION EVENTS ======
-        document.getElementById("btn-mod-search").addEventListener("click", function (e) {
-            e.preventDefault(); searchUserTeams();
+        document.getElementById("mod-filter").addEventListener("input", function () {
+            filterModUsers();
         });
 
-        document.getElementById("mod-userid").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") { e.preventDefault(); searchUserTeams(); }
+        document.getElementById("btn-mod-back-users").addEventListener("click", function (e) {
+            e.preventDefault(); backToModUsers();
         });
 
         document.getElementById("btn-mod-back").addEventListener("click", function (e) {
             e.preventDefault();
             document.getElementById("v-mod-team").classList.add("d-none");
             document.getElementById("v-mod").classList.remove("d-none");
+            selectModUser(modUserId, modUsername);
         });
 
         document.getElementById("btn-mod-delteam").addEventListener("click", function (e) {
@@ -1285,7 +1334,7 @@
                 notify("Equipo eliminado", "success");
                 document.getElementById("v-mod-team").classList.add("d-none");
                 document.getElementById("v-mod").classList.remove("d-none");
-                searchUserTeams();
+                selectModUser(modUserId, modUsername);
             }).catch(function (e) { notify(e.message); });
         });
 
