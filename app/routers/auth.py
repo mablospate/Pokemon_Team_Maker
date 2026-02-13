@@ -53,4 +53,4 @@ def login(data: UserCreate, session: Annotated[Session, Depends(get_session)]):
         settings.secret_key,
         algorithm="HS256",
     )
-    return {"access_token": token}
+    return {"access_token": token, "role": user.role.value}

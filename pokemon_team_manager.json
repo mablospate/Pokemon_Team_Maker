@@ -414,6 +414,360 @@
                     }
                 }
             }
+        },
+        "/users/{user_id}/teams": {
+            "get": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Read User Teams",
+                "operationId": "read_user_teams_users__user_id__teams_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TeamPublic"
+                                    },
+                                    "title": "Response Read User Teams Users  User Id  Teams Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/teams/{team_id}": {
+            "delete": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Delete User Team",
+                "operationId": "delete_user_team_users__user_id__teams__team_id__delete",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    },
+                    {
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Team Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Read User Team Pokemon",
+                "operationId": "read_user_team_pokemon_users__user_id__teams__team_id__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    },
+                    {
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Team Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TeamPublicWithPokemon"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/teams/{team_id}/pokemon/{pokemon_id}": {
+            "delete": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Delete User Team Pokemon",
+                "operationId": "delete_user_team_pokemon_users__user_id__teams__team_id__pokemon__pokemon_id__delete",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    },
+                    {
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Team Id"
+                        }
+                    },
+                    {
+                        "name": "pokemon_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Pokemon Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List Users",
+                "operationId": "list_users_users__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserPublic"
+                                    },
+                                    "type": "array",
+                                    "title": "Response List Users Users  Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/users/{user_id}/role": {
+            "patch": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Change User Role",
+                "operationId": "change_user_role_users__user_id__role_patch",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRoleUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserPublic"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}": {
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete User",
+                "operationId": "delete_user_users__user_id__delete",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "User Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -490,6 +844,15 @@
                     "team_id"
                 ],
                 "title": "PokemonPublic"
+            },
+            "Role": {
+                "type": "string",
+                "enum": [
+                    "user",
+                    "moderator",
+                    "admin"
+                ],
+                "title": "Role"
             },
             "TeamCreate": {
                 "properties": {
@@ -602,14 +965,30 @@
                     "id": {
                         "type": "integer",
                         "title": "Id"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/Role"
                     }
                 },
                 "type": "object",
                 "required": [
                     "username",
-                    "id"
+                    "id",
+                    "role"
                 ],
                 "title": "UserPublic"
+            },
+            "UserRoleUpdate": {
+                "properties": {
+                    "role": {
+                        "$ref": "#/components/schemas/Role"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "role"
+                ],
+                "title": "UserRoleUpdate"
             },
             "ValidationError": {
                 "properties": {

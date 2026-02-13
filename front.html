@@ -422,6 +422,109 @@
                 max-width: 100%
             }
         }
+
+        .main-nav {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: .75rem
+        }
+
+        .main-nav .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .95rem;
+            padding: .5rem 1rem;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all .2s;
+            border-bottom: 2px solid transparent
+        }
+
+        .main-nav .nav-btn:hover {
+            color: var(--text)
+        }
+
+        .main-nav .nav-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: var(--accent-soft)
+        }
+
+        .role-badge {
+            font-size: .7rem;
+            font-weight: 600;
+            padding: .15rem .5rem;
+            border-radius: 6px;
+            text-transform: uppercase
+        }
+
+        .role-user {
+            background: rgba(100, 116, 139, .2);
+            color: #94a3b8
+        }
+
+        .role-moderator {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .role-admin {
+            background: rgba(239, 68, 68, .15);
+            color: #ef4444
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0
+        }
+
+        .user-table th {
+            color: var(--muted);
+            font-size: .8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: .75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left
+        }
+
+        .user-table td {
+            padding: .75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle
+        }
+
+        .user-table tr:hover td {
+            background: var(--card2)
+        }
+
+        .select-dark {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 6px;
+            padding: .3rem .5rem;
+            font-size: .85rem
+        }
+
+        .select-dark:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-soft)
+        }
+
+        .mod-search {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem
+        }
     </style>
 </head>
 
@@ -435,6 +538,7 @@
                 <div class="user-badge">
                     <i class="fa-solid fa-user-circle"></i>
                     <span id="nav-username"></span>
+                    <span id="nav-role-badge" class="role-badge"></span>
                     <button type="button" class="btn-logout ms-2" id="btn-logout"><i
                             class="fa-solid fa-right-from-bracket"></i></button>
                 </div>
@@ -508,6 +612,16 @@
         <!-- MAIN -->
         <div id="sec-main" class="sec fade-in">
 
+            <!-- Main navigation tabs -->
+            <div class="main-nav" id="main-nav">
+                <button type="button" class="nav-btn active" data-view="teams"><i
+                        class="fa-solid fa-layer-group me-1"></i> Mis Equipos</button>
+                <button type="button" class="nav-btn d-none" id="nav-mod" data-view="mod"><i
+                        class="fa-solid fa-shield-halved me-1"></i> Moderación</button>
+                <button type="button" class="nav-btn d-none" id="nav-admin" data-view="admin"><i
+                        class="fa-solid fa-crown me-1"></i> Administración</button>
+            </div>
+
             <!-- Teams -->
             <div id="v-teams">
                 <div class="section-header">
@@ -552,6 +666,75 @@
                         <div class="col-auto"><button type="button" class="btn btn-primary-custom btn-sm"
                                 id="btn-addpk"><i class="fa-solid fa-plus"></i></button></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Moderation -->
+            <div id="v-mod" class="d-none">
+                <div class="mod-search">
+                    <h6><i class="fa-solid fa-magnifying-glass me-1" style="color:var(--accent)"></i> Buscar equipos de
+                        usuario</h6>
+                    <div class="row g-2 align-items-end">
+                        <div class="col"><input id="mod-userid" type="number"
+                                class="form-control form-control-dark form-control-sm" placeholder="ID del usuario">
+                        </div>
+                        <div class="col-auto"><button type="button" class="btn btn-primary-custom btn-sm"
+                                id="btn-mod-search"><i class="fa-solid fa-search me-1"></i> Buscar</button></div>
+                    </div>
+                </div>
+                <div id="mod-results" class="d-none">
+                    <div class="section-header">
+                        <h4 id="mod-user-title"></h4>
+                    </div>
+                    <div id="mod-teams-list" class="d-flex flex-column gap-2"></div>
+                    <div id="mod-no-teams" class="empty-state d-none">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>Este usuario no tiene equipos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moderation: Team Detail -->
+            <div id="v-mod-team" class="d-none">
+                <button type="button" class="btn btn-ghost btn-sm mb-3" id="btn-mod-back"><i
+                        class="fa-solid fa-arrow-left me-1"></i> Volver</button>
+                <div class="section-header">
+                    <h4 id="mod-team-name"></h4>
+                    <button type="button" class="btn btn-ghost btn-ghost-danger btn-sm" id="btn-mod-delteam"><i
+                            class="fa-solid fa-trash me-1"></i> Eliminar equipo</button>
+                </div>
+                <div id="mod-pokemon-list" class="row g-3"></div>
+                <div id="mod-no-pokemon" class="empty-state d-none">
+                    <i class="fa-solid fa-ghost"></i>
+                    <p>Este equipo está vacío.</p>
+                </div>
+            </div>
+
+            <!-- Admin -->
+            <div id="v-admin" class="d-none">
+                <div class="section-header">
+                    <h4><i class="fa-solid fa-crown me-2" style="color:var(--accent)"></i>Usuarios</h4>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-refresh-users"><i
+                            class="fa-solid fa-refresh me-1"></i> Actualizar</button>
+                </div>
+                <div class="card-dark">
+                    <div class="card-body" style="padding:0;overflow-x:auto">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Rol</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="no-users" class="empty-state d-none">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <p>No hay usuarios registrados.</p>
                 </div>
             </div>
         </div>
@@ -622,6 +805,60 @@
         </div>
     </div>
 
+    <!-- Modal: Delete user team (moderation) -->
+    <div class="modal fade" id="modalModDelTeam" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar equipo de usuario</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">¿Seguro que quieres eliminar este equipo y todos sus Pokémon?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom btn-sm" id="btn-confirm-mod-delteam"><i
+                            class="fa-solid fa-trash me-1"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Delete user team Pokemon (moderation) -->
+    <div class="modal fade" id="modalModDelPk" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Quitar Pokémon de usuario</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">¿Quitar este Pokémon del equipo del usuario?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom btn-sm" id="btn-confirm-mod-delpk"><i
+                            class="fa-solid fa-times me-1"></i> Quitar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Delete user (admin) -->
+    <div class="modal fade" id="modalDelUser" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar usuario</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">¿Seguro que quieres eliminar este usuario y todos sus datos?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom btn-sm" id="btn-confirm-deluser"><i
+                            class="fa-solid fa-trash me-1"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
         // ====== CONFIGURACIÓN ======
@@ -630,12 +867,18 @@
 
         var token = localStorage.getItem("ptb_token") || null;
         var storedUser = localStorage.getItem("ptb_user") || "";
+        var userRole = localStorage.getItem("ptb_role") || "user";
         var currentTeamId = null;
         var pendingDeletePkId = null;
+        var modUserId = null;
+        var modTeamId = null;
+        var pendingModDeletePkId = null;
+        var pendingDeleteUserId = null;
 
         function saveSession() {
             if (token) localStorage.setItem("ptb_token", token); else localStorage.removeItem("ptb_token");
             if (storedUser) localStorage.setItem("ptb_user", storedUser); else localStorage.removeItem("ptb_user");
+            if (userRole) localStorage.setItem("ptb_role", userRole); else localStorage.removeItem("ptb_role");
         }
 
         window.onerror = function (m) { console.error("[PTB]", m); return true; };
@@ -675,6 +918,41 @@
                     }
                     return r.text().then(function (txt) { return txt ? JSON.parse(txt) : null; });
                 });
+        }
+
+        function updateRoleUI() {
+            var badge = document.getElementById("nav-role-badge");
+            badge.textContent = userRole;
+            badge.className = "role-badge role-" + userRole;
+            var navMod = document.getElementById("nav-mod");
+            var navAdmin = document.getElementById("nav-admin");
+            if (userRole === "moderator" || userRole === "admin") {
+                navMod.classList.remove("d-none");
+            } else {
+                navMod.classList.add("d-none");
+            }
+            if (userRole === "admin") {
+                navAdmin.classList.remove("d-none");
+            } else {
+                navAdmin.classList.add("d-none");
+            }
+        }
+
+        function switchView(view) {
+            var allViews = ["v-teams", "v-team", "v-mod", "v-mod-team", "v-admin"];
+            allViews.forEach(function (v) { document.getElementById(v).classList.add("d-none"); });
+            document.querySelectorAll(".main-nav .nav-btn").forEach(function (b) { b.classList.remove("active"); });
+            var activeBtn = document.querySelector('.main-nav .nav-btn[data-view="' + view + '"]');
+            if (activeBtn) activeBtn.classList.add("active");
+            if (view === "teams") {
+                document.getElementById("v-teams").classList.remove("d-none");
+                showTeams();
+            } else if (view === "mod") {
+                document.getElementById("v-mod").classList.remove("d-none");
+            } else if (view === "admin") {
+                document.getElementById("v-admin").classList.remove("d-none");
+                loadUsers();
+            }
         }
 
         // Sprites
@@ -747,10 +1025,109 @@
             }).catch(function (e) { notify(e.message); });
         }
 
+        // ====== MODERATION ======
+        function searchUserTeams() {
+            var uid = document.getElementById("mod-userid").value.trim();
+            if (!uid) { notify("Introduce un ID de usuario"); return; }
+            modUserId = parseInt(uid);
+            api("/users/" + modUserId + "/teams").then(function (teams) {
+                document.getElementById("mod-results").classList.remove("d-none");
+                document.getElementById("mod-user-title").textContent = "Equipos del usuario #" + modUserId;
+                var c = document.getElementById("mod-teams-list"); c.innerHTML = "";
+                document.getElementById("mod-no-teams").classList.toggle("d-none", teams.length > 0);
+                teams.forEach(function (t) {
+                    var d = document.createElement("div");
+                    d.className = "team-card fade-in";
+                    d.innerHTML = '<span class="team-name"><i class="fa-solid fa-pokeball me-2" style="color:var(--accent)"></i>' + t.name + '</span><span class="team-id">#' + t.id + '</span>';
+                    d.addEventListener("click", function (e) { e.preventDefault(); openModTeam(t.id, t.name); });
+                    c.appendChild(d);
+                });
+            }).catch(function (e) { notify(e.message); });
+        }
+
+        function openModTeam(teamId, name) {
+            modTeamId = teamId;
+            document.getElementById("v-mod").classList.add("d-none");
+            document.getElementById("v-mod-team").classList.remove("d-none");
+            document.getElementById("mod-team-name").textContent = name;
+            loadModPokemon();
+        }
+
+        function loadModPokemon() {
+            api("/users/" + modUserId + "/teams/" + modTeamId).then(function (data) {
+                document.getElementById("mod-team-name").textContent = data.name;
+                var c = document.getElementById("mod-pokemon-list"); c.innerHTML = "";
+                var pk = data.pokemon || [];
+                document.getElementById("mod-no-pokemon").classList.toggle("d-none", pk.length > 0);
+                var chain = Promise.resolve();
+                pk.forEach(function (p) {
+                    chain = chain.then(function () {
+                        return getSprite(p.species).then(function (sp) {
+                            var col = document.createElement("div"); col.className = "col-6 col-md-4 fade-in";
+                            col.innerHTML = '<div class="pk-card">' +
+                                '<div class="pk-img-wrap">' +
+                                (sp ? '<img src="' + sp + '" alt="' + p.species + '">' : '<div style="font-size:2.5rem;opacity:.3">❓</div>') +
+                                '</div><div class="pk-info">' +
+                                '<p class="pk-name">' + p.name + '</p>' +
+                                '<span class="pk-species">' + p.species + '</span><br>' +
+                                '<span class="pk-level">Nv. ' + p.level + '</span>' +
+                                '</div><button type="button" class="pk-remove"><i class="fa-solid fa-times me-1"></i> Quitar</button></div>';
+                            col.querySelector(".pk-remove").addEventListener("click", function (e) {
+                                e.preventDefault(); e.stopPropagation();
+                                pendingModDeletePkId = p.id; modal("modalModDelPk", true);
+                            });
+                            c.appendChild(col);
+                        });
+                    });
+                });
+            }).catch(function (e) { notify(e.message); });
+        }
+
+        // ====== ADMIN ======
+        function loadUsers() {
+            api("/users/").then(function (users) {
+                var tbody = document.getElementById("users-tbody"); tbody.innerHTML = "";
+                document.getElementById("no-users").classList.toggle("d-none", users.length > 0);
+                users.forEach(function (u) {
+                    var tr = document.createElement("tr"); tr.className = "fade-in";
+                    tr.innerHTML = '<td>' + u.id + '</td>' +
+                        '<td><strong>' + u.username + '</strong></td>' +
+                        '<td><span class="role-badge role-' + u.role + '">' + u.role + '</span></td>' +
+                        '<td><div class="d-flex gap-2 align-items-center">' +
+                        '<select class="select-dark" data-uid="' + u.id + '">' +
+                        '<option value="user"' + (u.role === "user" ? ' selected' : '') + '>user</option>' +
+                        '<option value="moderator"' + (u.role === "moderator" ? ' selected' : '') + '>moderator</option>' +
+                        '<option value="admin"' + (u.role === "admin" ? ' selected' : '') + '>admin</option>' +
+                        '</select>' +
+                        '<button type="button" class="btn btn-ghost btn-ghost-danger btn-sm btn-del-user" data-uid="' + u.id + '" data-uname="' + u.username + '">' +
+                        '<i class="fa-solid fa-trash"></i></button></div></td>';
+                    var sel = tr.querySelector("select");
+                    sel.addEventListener("change", function () {
+                        var newRole = sel.value;
+                        api("/users/" + u.id + "/role", {
+                            method: "PATCH", body: JSON.stringify({ role: newRole })
+                        }).then(function () {
+                            notify("Rol actualizado a " + newRole, "success");
+                            loadUsers();
+                        }).catch(function (e) { notify(e.message); sel.value = u.role; });
+                    });
+                    tr.querySelector(".btn-del-user").addEventListener("click", function (e) {
+                        e.preventDefault();
+                        pendingDeleteUserId = u.id;
+                        document.getElementById("modalDelUser").querySelector(".modal-body").textContent =
+                            "¿Seguro que quieres eliminar al usuario \"" + u.username + "\" y todos sus datos?";
+                        modal("modalDelUser", true);
+                    });
+                    tbody.appendChild(tr);
+                });
+            }).catch(function (e) { notify(e.message); });
+        }
+
         // Restore session
         if (token) {
             document.getElementById("nav-username").textContent = storedUser;
             document.getElementById("nav-user").classList.remove("d-none");
+            updateRoleUI();
             go("sec-main");
             setTimeout(showTeams, 50);
         } else {
@@ -784,9 +1161,11 @@
                 else token = d.access_token || d.token || "";
                 if (!token) { notify("No se pudo obtener el token"); return; }
                 storedUser = document.getElementById("l-user").value;
+                userRole = d.role || "user";
                 saveSession();
                 document.getElementById("nav-username").textContent = storedUser;
                 document.getElementById("nav-user").classList.remove("d-none");
+                updateRoleUI();
                 go("sec-main"); showTeams();
             }).catch(function (e) { notify(e.message); });
         });
@@ -803,7 +1182,8 @@
         });
 
         document.getElementById("btn-logout").addEventListener("click", function (e) {
-            e.preventDefault(); token = null; currentTeamId = null; storedUser = "";
+            e.preventDefault(); token = null; currentTeamId = null; storedUser = ""; userRole = "user";
+            modUserId = null; modTeamId = null;
             saveSession();
             document.getElementById("nav-user").classList.add("d-none"); go("sec-auth");
         });
@@ -868,6 +1248,67 @@
             e.preventDefault();
             api("/teams/" + currentTeamId + "/pokemon/" + pendingDeletePkId, { method: "DELETE" }).then(function () {
                 modal("modalDelPk", false); loadPokemon();
+            }).catch(function (e) { notify(e.message); });
+        });
+
+        // Main nav tab switching
+        document.querySelectorAll(".main-nav .nav-btn").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                switchView(btn.getAttribute("data-view"));
+            });
+        });
+
+        // ====== MODERATION EVENTS ======
+        document.getElementById("btn-mod-search").addEventListener("click", function (e) {
+            e.preventDefault(); searchUserTeams();
+        });
+
+        document.getElementById("mod-userid").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") { e.preventDefault(); searchUserTeams(); }
+        });
+
+        document.getElementById("btn-mod-back").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("v-mod-team").classList.add("d-none");
+            document.getElementById("v-mod").classList.remove("d-none");
+        });
+
+        document.getElementById("btn-mod-delteam").addEventListener("click", function (e) {
+            e.preventDefault(); modal("modalModDelTeam", true);
+        });
+
+        document.getElementById("btn-confirm-mod-delteam").addEventListener("click", function (e) {
+            e.preventDefault();
+            api("/users/" + modUserId + "/teams/" + modTeamId, { method: "DELETE" }).then(function () {
+                modal("modalModDelTeam", false);
+                notify("Equipo eliminado", "success");
+                document.getElementById("v-mod-team").classList.add("d-none");
+                document.getElementById("v-mod").classList.remove("d-none");
+                searchUserTeams();
+            }).catch(function (e) { notify(e.message); });
+        });
+
+        document.getElementById("btn-confirm-mod-delpk").addEventListener("click", function (e) {
+            e.preventDefault();
+            api("/users/" + modUserId + "/teams/" + modTeamId + "/pokemon/" + pendingModDeletePkId, { method: "DELETE" }).then(function () {
+                modal("modalModDelPk", false);
+                notify("Pokémon eliminado", "success");
+                loadModPokemon();
+            }).catch(function (e) { notify(e.message); });
+        });
+
+        // ====== ADMIN EVENTS ======
+        document.getElementById("btn-refresh-users").addEventListener("click", function (e) {
+            e.preventDefault(); loadUsers();
+        });
+
+        document.getElementById("btn-confirm-deluser").addEventListener("click", function (e) {
+            e.preventDefault();
+            api("/users/" + pendingDeleteUserId, { method: "DELETE" }).then(function () {
+                modal("modalDelUser", false);
+                notify("Usuario eliminado", "success");
+                loadUsers();
             }).catch(function (e) { notify(e.message); });
         });
     </script>
