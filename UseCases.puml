@@ -19,13 +19,13 @@ rectangle "Pokemon Team Manager" as app{
         u --> (Delete Pokemon from one of my Teams)
     }
     frame "Moderator operations"{
+        m --> (List Users)
         m --> (Read User's Team)
         m --> (Delete User's Team)
         m --> (Read Pokemon in one of User's Teams)
         m --> (Delete Pokemon from one of User's Teams)
     }
     frame "Admin operations"{
-        a --> (List Users)
         a --> (Change a User's Role)
         a --> (Delete User)
     }
